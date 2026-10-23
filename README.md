@@ -47,7 +47,7 @@ documentation here.
 | macOS (Apple silicon) | `Hinoki-<version>-arm64.dmg` | Open the DMG and drag Hinoki to Applications. The builds aren't notarized yet, so the first time, right-click Hinoki and choose **Open**. |
 | Linux x64 | `Hinoki-<version>-x86_64.AppImage`, `-amd64.deb`, `-x86_64.rpm` | AppImage: `chmod +x Hinoki-*.AppImage` and run it. It updates itself in place. deb/rpm: `sudo apt install ./Hinoki-*.deb` or `sudo dnf install ./Hinoki-*.rpm`. |
 | Linux arm64 | `Hinoki-<version>-arm64.AppImage`, `-arm64.deb`, `-aarch64.rpm` | As above. |
-| Windows x64 | `Hinoki-Setup-<version>-x64.exe` | Coming soon. |
+| Windows x64 | `Hinoki-Setup-<version>-x64.exe` | Run the installer. It isn't code-signed yet, so SmartScreen may ask you to confirm (More info → Run anyway). |
 
 Every file's SHA-256 checksum is listed in that release's `latest.json`.
 
