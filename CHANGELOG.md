@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.4
+
+- **KannaCode chat approvals work:** the Allow and Deny buttons on "KannaCode wants to run…" prompts (and the
+  buttons on KannaCode's questions) can be clicked again.
+- **Long commands wrap** inside approval prompts instead of running off the right edge.
+- **Launch KannaCode opens the chat panel.** Each model in the KannaCode view also has a button to chat with it
+  and a button to open it in a terminal.
+
 ## 0.1.3, the first public release
 
 - **Projects, PyCharm-style:**
