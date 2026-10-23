@@ -1,0 +1,81 @@
+name: Build Hinoki for Windows
+
+# Builds the Windows installer from Hinoki's (private) source, read through a read-only deploy key, with the
+# KannaCode distribution branch bundled. The installer is uploaded as a workflow artifact; the maintainer publishes
+# it with the macOS and Linux builds (scripts/publish-release.js writes latest.json for all of them).
+on:
+  workflow_dispatch:
+    inputs:
+      hinoki_ref:
+        description: Hinoki source ref (branch, tag or commit)
+        default: main
+      kannacode_ref:
+        description: KannaCode ref to bundle
+        default: hinoki-dist
+
+jobs:
+  windows:
+    runs-on: windows-2022
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          repository: DarrellBest/hinoki
+          ref: ${{ inputs.hinoki_ref }}
+          ssh-key: ${{ secrets.HINOKI_DEPLOY_KEY }}
+          path: hinoki
+      - uses: actions/checkout@v6
+        with:
+          repository: DarrellBest/KannaCode
+          ref: ${{ inputs.kannacode_ref }}
+          ssh-key: ${{ secrets.KANNACODE_DEPLOY_KEY }}
+          path: kannacode
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24.x
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+      - uses: astral-sh/setup-uv@v7
+
+      - name: Install dependencies
+        shell: bash
+        working-directory: hinoki
+        run: yarn --skip-integrity-check --network-timeout 100000
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build
+        shell: bash
+        working-directory: hinoki
+        run: |
+          yarn build
+          yarn download:plugins
+        env:
+          NODE_OPTIONS: --max_old_space_size=6144
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Bundle KannaCode
+        shell: bash
+        working-directory: hinoki
+        run: node scripts/bundle-kannacode.js --target win32-x64
+        env:
+          KANNACODE_SRC: ${{ github.workspace }}/kannacode
+
+      - name: Package
+        shell: bash
+        working-directory: hinoki
+        run: yarn electron package
+        env:
+          NODE_OPTIONS: --max_old_space_size=6144
+
+      - name: Upload the installer
+        uses: actions/upload-artifact@v6
+        with:
+          name: hinoki-windows-x64
+          path: |
+            hinoki/applications/electron/dist/*.exe
+            hinoki/applications/electron/dist/*.exe.blockmap
+            hinoki/applications/electron/dist/latest.yml
+          if-no-files-found: error
+          retention-days: 14
