@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.1.5
+
+- **Models through this computer:** in a remote workspace, run a model on this computer or on a machine only it
+  can reach (like the Mac on your desk running MLX). Hinoki relays it to the workspace host over its own SSH
+  connection, so KannaCode there can use it although the workspace host never connects to that machine.
+- **Any model from Hugging Face** in setup (Hinoki Setup → Model, or Models & Servers → Set up a model…):
+  search filtered to what the machine runs (MLX, GGUF or vLLM), a details card (parameters, quantization, size,
+  context, vision) and recommended settings, including a context window that fits the machine's memory.
+- **Remote workspaces:** the host list reads your ~/.ssh/config, and a host's Port, User and IdentityFile
+  (with `~` paths) now apply, so key logins work without a password prompt.
+- **Mac model hosts over SSH** start correctly and stay awake while serving; SSH hosts report their memory.
+- **llama.cpp** downloads GGUF repos itself (`owner/repo:Q4_K_M`); registered models use the context a running
+  server reports.
+
 ## 0.1.4
 
 - **KannaCode chat approvals work:** the Allow and Deny buttons on "KannaCode wants to run…" prompts (and the
